@@ -5,11 +5,11 @@
 <option value=/getting-started/frameworks/>- Further reading</option>
 <option value=/migrating-from-v4/>Migrating from V4</option>
 <option value=/examples/>Examples</option></select></center></div><div><div class=searchbox><input data-search-input id=search-by type=text placeholder=Search...></div><script type=text/javascript src=/js/lunr.min.js></script><script type=text/javascript src=/js/auto-complete.js></script><link href=/css/auto-complete.css rel=stylesheet><script type=text/javascript>var baseurl="https:\/\/go-telegram-bot-api.github.io";</script><script type=text/javascript src=/js/search.js></script></div><h1>Getting Started</h1><p>This library is designed to be very similar to working with the Bot API directly. It does not provide any methods or features than what the Bot API provides.</p><p>Let&rsquo;s start by building a bot that repeats each message it sees back to the user. First, make sure you&rsquo;re at least somewhat familiar with how Telegram Bots work. You can find their documentation <a href=https://core.telegram.org/bots/api>here</a>.</p><p>Next we need to make sure we have the latest version of the library installed.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go get -u github.com/go-telegram-bot-api/telegram-bot-api</code></pre></div><p>If V5 hasn&rsquo;t been released yet and you&rsquo;re using go 1.11, you can use modules to request the develop branch instead.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell>export GO111MODULES<span style=color:#f92672>=</span>on
-go get -u github.com/go-telegram-bot-api/telegram-bot-api@develop</code></pre></div><p>Now that we&rsquo;ve got everything ready to go, we can open up a new file and start writing some code. We&rsquo;ll start by creating a new <code><a href=https://godoc.org/github.com/go-telegram-bot-api/telegram-bot-api#BotAPI>BotAPI</a></code>. Instead of hardcoding the token from <a href=https://t.me/botfather>@Botfather</a>, we can use environment variables.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span> 
+go get -u github.com/go-telegram-bot-api/telegram-bot-api@develop</code></pre></div><p>Now that we&rsquo;ve got everything ready to go, we can open up a new file and start writing some code. We&rsquo;ll start by creating a new <code><a href=https://godoc.org/github.com/go-telegram-bot-api/telegram-bot-api#BotAPI>BotAPI</a></code>. Instead of hardcoding the token from <a href=https://t.me/botfather>@Botfather</a>, we can use environment variables.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#a6e22e>main</span>
 
 <span style=color:#f92672>import</span> (
     <span style=color:#e6db74>&#34;os&#34;</span>
-    
+
     <span style=color:#e6db74>&#34;github.com/go-telegram-bot-api&#34;</span>
 )
 
@@ -18,46 +18,46 @@ go get -u github.com/go-telegram-bot-api/telegram-bot-api@develop</code></pre></
     <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
         panic(<span style=color:#a6e22e>err</span>) <span style=color:#75715e>// You should add better error handling than this!
 </span><span style=color:#75715e></span>    }
-    
+
     <span style=color:#a6e22e>bot</span>.<span style=color:#a6e22e>Debug</span> = <span style=color:#66d9ef>true</span> <span style=color:#75715e>// Has the library display every request and response.
 </span><span style=color:#75715e></span>}</code></pre></div><p>This code gets an environment variable named <code>TELEGRAM_APITOKEN</code>, initializes a new <code><a href=https://godoc.org/github.com/go-telegram-bot-api/telegram-bot-api#BotAPI>BotAPI</a></code>, causes a panic if the token was missing or invalid, and enables debugging in the library. Enabling debug mode can be incredibly helpful to make sure each request and response looks like you&rsquo;d expect.</p><p>After that bit has been done, we need to keep asking Telegram for updates. While it is possible to have Telegram send your Bot webhooks instead, it&rsquo;s much easier to get started with polling updates. The following code should go in the main function, below the <code>bot.Debug</code> line.</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// Create a new UpdateConfig struct with an offset of 0.
-</span><span style=color:#75715e>// Future requests can pass a higher offset to ensure there aren&#39;t duplicates. 
+</span><span style=color:#75715e>// Future requests can pass a higher offset to ensure there aren&#39;t duplicates.
 </span><span style=color:#75715e></span><span style=color:#a6e22e>updateConfig</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>tgbotapi</span>.<span style=color:#a6e22e>NewUpdate</span>(<span style=color:#ae81ff>0</span>)
 
-<span style=color:#75715e>// Tell Telegram we want to keep the connection open longer and wait for incoming updates. 
-</span><span style=color:#75715e>// This reduces the number of requests that are made while improving response time. 
+<span style=color:#75715e>// Tell Telegram we want to keep the connection open longer and wait for incoming updates.
+</span><span style=color:#75715e>// This reduces the number of requests that are made while improving response time.
 </span><span style=color:#75715e></span><span style=color:#a6e22e>updateConfig</span>.<span style=color:#a6e22e>Timeout</span> = <span style=color:#ae81ff>60</span>
 
 <span style=color:#75715e>// Now we can pass our UpdateConfig struct to the library to start getting updates.
-</span><span style=color:#75715e>// The GetUpdatesChan method is opinionated and as such, it is reasonable to implement 
+</span><span style=color:#75715e>// The GetUpdatesChan method is opinionated and as such, it is reasonable to implement
 </span><span style=color:#75715e>// your own version of it. It is easier to use if you have no special requirements though.
 </span><span style=color:#75715e></span><span style=color:#a6e22e>updates</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>bot</span>.<span style=color:#a6e22e>GetUpdatesChan</span>(<span style=color:#a6e22e>u</span>)
 
-<span style=color:#75715e>// Now we&#39;re ready to start going through the updates we&#39;re given. 
-</span><span style=color:#75715e>// Because we have a channel, we can range over it. 
+<span style=color:#75715e>// Now we&#39;re ready to start going through the updates we&#39;re given.
+</span><span style=color:#75715e>// Because we have a channel, we can range over it.
 </span><span style=color:#75715e></span><span style=color:#66d9ef>for</span> <span style=color:#a6e22e>update</span> <span style=color:#f92672>:=</span> <span style=color:#66d9ef>range</span> <span style=color:#a6e22e>updates</span> {
-    <span style=color:#75715e>// There are many types of updates. We only care about messages right now, 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// so we should ignore any other kinds. 
+    <span style=color:#75715e>// There are many types of updates. We only care about messages right now,
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// so we should ignore any other kinds.
 </span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>nil</span> {
-        <span style=color:#66d9ef>continue</span> 
+        <span style=color:#66d9ef>continue</span>
     }
-    
-    <span style=color:#75715e>// Because we have to create structs for every kind of request, 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// there&#39;s a number of helper functions to make creating common 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// types easier. Here, we&#39;re using the NewMessage helper which 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// returns a MessageConfig struct. 
+
+    <span style=color:#75715e>// Because we have to create structs for every kind of request,
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// there&#39;s a number of helper functions to make creating common
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// types easier. Here, we&#39;re using the NewMessage helper which
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// returns a MessageConfig struct.
 </span><span style=color:#75715e></span>    <span style=color:#a6e22e>msg</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>tgbotapi</span>.<span style=color:#a6e22e>NewMessage</span>(<span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span>.<span style=color:#a6e22e>Chat</span>.<span style=color:#a6e22e>ID</span>, <span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span>.<span style=color:#a6e22e>Text</span>)
-    
+
     <span style=color:#75715e>// As there&#39;s too many fields for each Config to specify in a single
 </span><span style=color:#75715e></span>    <span style=color:#75715e>// function call, we need to modify the result the helper gave us.
 </span><span style=color:#75715e></span>    <span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ReplyToMessageID</span> = <span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span>.<span style=color:#a6e22e>MessageID</span>
-    
+
     <span style=color:#75715e>// We&#39;re ready to send our message!
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// The Send method is for Configs that return a Message struct. 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// Sending Messages (among many other types) return a Message. 
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// The Send method is for Configs that return a Message struct.
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// Sending Messages (among many other types) return a Message.
 </span><span style=color:#75715e></span>    <span style=color:#75715e>// In this case, we don&#39;t care about the returned Message.
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// We only need to make sure our message went through successfully. 
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// We only need to make sure our message went through successfully.
 </span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>bot</span>.<span style=color:#a6e22e>Send</span>(<span style=color:#a6e22e>msg</span>); <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
-        panic(<span style=color:#a6e22e>err</span>) <span style=color:#75715e>// Again, this is a bad way to handle errors. 
+        panic(<span style=color:#a6e22e>err</span>) <span style=color:#75715e>// Again, this is a bad way to handle errors.
 </span><span style=color:#75715e></span>    }
 }</code></pre></div><p>And there&rsquo;s the basics of building your very own bot! You can see the entire code for this bot <a href=/examples/reply-bot/>here</a> along with many more examples.</p><div class=chevrons><div id=navigation><a class="nav nav-prev" href=/><i class="fa fa-chevron-left"></i><label></label></a><a class="nav nav-next" href=/getting-started/frameworks/ title="Further reading" style=margin-right:0><label>Further reading</label><i class="fa fa-chevron-right"></i></a></div></div></section></article><footer><div class=footline><div class=github-link><a href=https://github.com/go-telegram-bot-api/docs/edit/master/content/getting-started/_index.md target=blank><i class="fa fa-code-fork"></i>Improve this page</a></div></div><div><p>Last updated 2018-10-09</p></div></footer><script src=/js/clipboard.min.js></script><link href=/css/featherlight.min.css rel=stylesheet><script src=/js/featherlight.min.js></script><script src=/theme-flex/script.js></script></body></html>

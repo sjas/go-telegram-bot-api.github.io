@@ -8,7 +8,7 @@
 
 <span style=color:#f92672>import</span> (
 	<span style=color:#e6db74>&#34;log&#34;</span>
-    <span style=color:#e6db74>&#34;os&#34;</span>
+	<span style=color:#e6db74>&#34;os&#34;</span>
 
 	<span style=color:#e6db74>&#34;github.com/go-telegram-bot-api/telegram-bot-api&#34;</span>
 )
@@ -36,9 +36,9 @@
 		<span style=color:#a6e22e>msg</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>tgbotapi</span>.<span style=color:#a6e22e>NewMessage</span>(<span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span>.<span style=color:#a6e22e>Chat</span>.<span style=color:#a6e22e>ID</span>, <span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span>.<span style=color:#a6e22e>Text</span>)
 		<span style=color:#a6e22e>msg</span>.<span style=color:#a6e22e>ReplyToMessageID</span> = <span style=color:#a6e22e>update</span>.<span style=color:#a6e22e>Message</span>.<span style=color:#a6e22e>MessageID</span>
 
-        <span style=color:#66d9ef>if</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>bot</span>.<span style=color:#a6e22e>Send</span>(<span style=color:#a6e22e>msg</span>); <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
-            <span style=color:#a6e22e>log</span>.<span style=color:#a6e22e>Panic</span>(<span style=color:#a6e22e>err</span>)
-        }
+		<span style=color:#66d9ef>if</span> <span style=color:#a6e22e>_</span>, <span style=color:#a6e22e>err</span> <span style=color:#f92672>:=</span> <span style=color:#a6e22e>bot</span>.<span style=color:#a6e22e>Send</span>(<span style=color:#a6e22e>msg</span>); <span style=color:#a6e22e>err</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>nil</span> {
+			<span style=color:#a6e22e>og</span>.<span style=color:#a6e22e>Panic</span>(<span style=color:#a6e22e>err</span>)
+		}
 	}
 }</code></pre></div><div class=chevrons><div id=navigation><a class="nav nav-prev" href=/examples/ title=Examples><i class="fa fa-chevron-left"></i><label>Examples</label></a>
 <a class="nav nav-next" href=/getting-started/ title="Getting Started" style=margin-right:0><label>Getting Started</label><i class="fa fa-chevron-right"></i></a></div></div></section></article><footer><div class=footline><div class=github-link><a href=https://github.com/go-telegram-bot-api/docs/edit/master/content/examples/reply-bot.md target=blank><i class="fa fa-code-fork"></i>Improve this page</a></div></div><div><p>Last updated 2018-10-09</p></div></footer><script src=/js/clipboard.min.js></script><link href=/css/featherlight.min.css rel=stylesheet><script src=/js/featherlight.min.js></script><script src=/theme-flex/script.js></script></body></html>
